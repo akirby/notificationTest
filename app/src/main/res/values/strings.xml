@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">NotificationTest</string>
+    <string name="action_settings">Settings</string>
+    <string name="channel_name">Test Channel</string>
+    <string name="channel_description">test channel desc</string>
+    <string name="Approved">Approve</string>
+    <string name="Deny">Deny</string>
+</resources>
