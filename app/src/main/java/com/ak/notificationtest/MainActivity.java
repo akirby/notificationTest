@@ -4,8 +4,10 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,18 +22,38 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String CHANNEL_ID = "test channel id";
+    private String CHANNEL_ID = "AlertChannel";
     private TextView mainText;
 
     private int notificationId = 1;
     private NotificationManagerCompat notificationManager;
 
+    public BroadcastReceiver approveReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent){
+            notificationManager.cancel(notificationId);
+            String data = intent.getAction();
+            Toast.makeText(getApplicationContext(), data, Toast.LENGTH_LONG);
+            if(data != null && data.equals("com.myapp.Approve")){
+                mainText.setText("Approved");
+            }
+            else{
+                mainText.setText("Denied");
+            }
+        }
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        registerReceiver(approveReceiver, new IntentFilter("com.myapp.Approve"));
+
         setContentView(R.layout.activity_main);
         mainText = (TextView) findViewById(R.id.mainText);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -65,13 +87,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void showNotification(){
 
-        Intent approveIntent = new Intent(this, MainActivity.class);
+//        Intent approveIntent = new Intent(this, MainActivity.class);
+//        approveIntent.setData(Uri.parse("Approve"));
+//        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, approveIntent, Intent.FILL_IN_ACTION);
+//
+//        Intent denyIntent = new Intent(this, MainActivity.class);
+//        approveIntent.setData(Uri.parse("deny"));
+//        PendingIntent denyPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, denyIntent, Intent.FILL_IN_ACTION);
+        Context appContext = getApplicationContext();
+        Intent approveIntent = new Intent(appContext, ApprovalReceiver.class);
         approveIntent.setData(Uri.parse("Approve"));
-        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, approveIntent, Intent.FILL_IN_ACTION);
+        approveIntent.setAction("com.myapp.Approve");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, approveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Intent denyIntent = new Intent(this, MainActivity.class);
+        Intent denyIntent = new Intent(appContext, ApprovalReceiver.class);
         approveIntent.setData(Uri.parse("deny"));
-        PendingIntent denyPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, denyIntent, Intent.FILL_IN_ACTION);
+        denyIntent.setAction("com.myapp.Deny");
+        PendingIntent denyPendingIntent = PendingIntent.getBroadcast(appContext, 0, denyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -90,18 +123,18 @@ public class MainActivity extends AppCompatActivity {
         notificationManager.notify(notificationId, builder.build());
     }
 
-    protected void onNewIntent(Intent intent){
-        int x = 1;
-        x = x +1;
-        notificationManager.cancel(notificationId);
-        String data = intent.getDataString();
-        if(data != null && data.equals("Approve")){
-            mainText.setText("Approved");
-        }
-        else{
-            mainText.setText("Denied");
-        }
-    }
+//    protected void onNewIntent(Intent intent){
+//        int x = 1;
+//        x = x +1;
+//        notificationManager.cancel(notificationId);
+//        String data = intent.getDataString();
+//        if(data != null && data.equals("Approve")){
+//            mainText.setText("Approved");
+//        }
+//        else{
+//            mainText.setText("Denied");
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -125,3 +158,5 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
+
