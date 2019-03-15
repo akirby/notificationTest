@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        registerReceiver(approveReceiver, new IntentFilter("com.myapp.Approve"));
+        this.registerReceiver(approveReceiver, new IntentFilter("com.myapp.Approve"));
+        this.registerReceiver(approveReceiver, new IntentFilter("com.myapp.Deny"));
 
         setContentView(R.layout.activity_main);
         mainText = (TextView) findViewById(R.id.mainText);
@@ -95,15 +96,17 @@ public class MainActivity extends AppCompatActivity {
 //        approveIntent.setData(Uri.parse("deny"));
 //        PendingIntent denyPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, denyIntent, Intent.FILL_IN_ACTION);
         Context appContext = getApplicationContext();
-        Intent approveIntent = new Intent(appContext, ApprovalReceiver.class);
-        approveIntent.setData(Uri.parse("Approve"));
-        approveIntent.setAction("com.myapp.Approve");
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 1, approveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+//        Intent approveIntent = new Intent(this, MainActivity.class);
+        Intent approveIntent = new Intent("com.myapp.Approve");
+//        approveIntent.setData(Uri.parse("Approve"));
+//        approveIntent.setAction("com.myapp.Approve");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, approveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Intent denyIntent = new Intent(appContext, ApprovalReceiver.class);
-        approveIntent.setData(Uri.parse("deny"));
-        denyIntent.setAction("com.myapp.Deny");
-        PendingIntent denyPendingIntent = PendingIntent.getBroadcast(appContext, 2, denyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+//        Intent denyIntent = new Intent(this, MainActivity.class);
+        Intent denyIntent = new Intent("com.myapp.Deny");
+//        approveIntent.setData(Uri.parse("deny"));
+//        denyIntent.setAction("com.myapp.Deny");
+        PendingIntent denyPendingIntent = PendingIntent.getBroadcast(this, 2, denyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
