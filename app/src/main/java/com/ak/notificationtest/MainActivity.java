@@ -98,12 +98,12 @@ public class MainActivity extends AppCompatActivity {
         Intent approveIntent = new Intent(appContext, ApprovalReceiver.class);
         approveIntent.setData(Uri.parse("Approve"));
         approveIntent.setAction("com.myapp.Approve");
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, approveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 1, approveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Intent denyIntent = new Intent(appContext, ApprovalReceiver.class);
         approveIntent.setData(Uri.parse("deny"));
         denyIntent.setAction("com.myapp.Deny");
-        PendingIntent denyPendingIntent = PendingIntent.getBroadcast(appContext, 0, denyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent denyPendingIntent = PendingIntent.getBroadcast(appContext, 2, denyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
